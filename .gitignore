@@ -1,4 +1,6 @@
 */__pycache__
 .idea/ 
-bot/local_config
+bot/local_config.py
 venv
+*.log
+
