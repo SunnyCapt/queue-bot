@@ -2,7 +2,7 @@ import os
 from time import time
 import logging
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler
 from telegram.ext.dispatcher import run_async
 
 from bot import config
@@ -24,6 +24,7 @@ class StackPoint:
             self._set_next_sp(data, True)
 
     def _set_next_sp(self, data, is_init=False):
+        data = data.strip()
         if not data.isdecimal():
             logging.error(f"SP file contain wrong data: {data}. Current SP value: {self._value}")
             raise Exception()
@@ -32,17 +33,17 @@ class StackPoint:
     def next(self):
         logging.info(f"Start getting next student. Current SP value: {self._value}")
         stime = time()
-
         while self.is_lock:
             if (time() - stime) < config.timeout:
                 logging.error(f"SP timeout. SP={self._value}")
                 raise TimeoutError()
 
         self.is_lock = True
-        with open(config.sp_data_filepath, 'r+') as file:
+        with open(config.sp_data_filepath, 'r') as file:
             data = file.read()
             self._set_next_sp(data)
-            file.seek(0)
+        with open(config.sp_data_filepath, 'w') as file:
+            # TODO: fix it
             file.write(f"{self._value}")
         self.is_lock = False
         logging.info(f"Finish getting next student. Current SP value: {self._value}")
@@ -52,9 +53,14 @@ class StackPoint:
         assert self._value is not None
         return self._value
 
+
 @run_async
 def start(bot, update):
-    bot.sendMessage(chat_id=update.message.chat_id, text='Страдания с удобством\n/next - перейти к следующему по очереди студенту\n/get - посмотреть очередь', parse_mode="MARKDOWN")
+    bot.sendMessage(
+        chat_id=update.message.chat_id,
+        text='Страдания с удобством\n/next - перейти к следующему по очереди студенту\n/get - посмотреть очередь',
+        parse_mode="MARKDOWN"
+    )
 
 
 @run_async
@@ -68,7 +74,7 @@ def next(bot, update):
     next_student = sp.next()
     bot.sendMessage(chat_id=update.message.chat_id, text=f"**{next_student}**", parse_mode="MARKDOWN")
     logging.info(f"Finish procc request(next) from {update.message.chat_id} - {update.message.from_user.name}")
-    
+
 
 @run_async
 def get(bot, update):
