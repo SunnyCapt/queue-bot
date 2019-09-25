@@ -8,7 +8,7 @@ FИCK/FAQ/А_КАК
         <br> Написать [@BotFather](https://telegram.me/BotFather) (не забудь добавить команды /next и /get у своего бота)
         
         git clone https://github.com/SunnyCapt/queue-bot.git
-    Создать файл bot/local_config.py и задать все переменные, которые в bot/local_config.py равны None 
+    Создать файл bot/local_config.py и задать все переменные, которые в bot/config.py равны None 
 * -Как запустить?
     * На своем компе:
          <br> Придется искать надежный прокси и прописать его в \_\_main__.py 
