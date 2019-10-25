@@ -14,7 +14,11 @@ FИCK/FAQ/А_КАК
          <br> Придется искать надежный прокси и прописать его в \_\_main__.py 
          в конце, где закомментированная строка
           
-            python3 bot
+            sudo apt-get install virtualenv
+            virtualenv venv --no-site-packages --python=python3 
+            source venv/bin/activate
+            pipp install -r requirements.txt
+            python bot
     * На серваке:
         
         Установить heroku cli, а потом:
