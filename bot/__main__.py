@@ -97,10 +97,7 @@ except AssertionError as e:
     logging.error("Wrong config")
     exit(-1)
 
-if config.proxy != "protocol://host:port":
-    updater = Updater(config.bot_token, request_kwargs={'proxy_url': config.proxy})
-else:
-    updater = Updater(config.bot_token)
+updater = Updater(config.bot_token, **({'request_kwargs': {'proxy_url': config.proxy}} if config.proxy is not None else {}))
 
 start_handler = CommandHandler('start', start)
 next_handler = CommandHandler('next', next)
